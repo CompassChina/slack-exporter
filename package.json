@@ -1,0 +1,20 @@
+{
+  "name": "slack-exporter",
+  "version": "1.0.0",
+  "scripts": {
+    "dm": "node src/fetch/direct_message.js",
+    "mdm": "node src/fetch/multi_direct_message.js",
+    "private": "node src/fetch/private_channel.js",
+    "public": "node src/fetch/public_channel.js",
+    "users": "node src/fetch/user.js"
+  },
+  "dependencies": {
+    "async": "^3.2.6",
+    "axios": "^1.8.1",
+    "csv-writer": "^1.6.0",
+    "jsonfile": "^6.1.0",
+    "lodash": "^4.17.21",
+    "moment-timezone": "^0.5.47",
+    "winston": "^3.17.0"
+  }
+}
