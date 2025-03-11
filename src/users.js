@@ -1,6 +1,8 @@
 const {OPTIONS_GET, SLACK_API, FOLDER} = require("./constants");
 const jsonfile = require("jsonfile");
 const logger = require("./log");
+const fs = require("jsonfile");
+const _ = require("lodash");
 const createCsvWriter = require('csv-writer').createObjectCsvWriter;
 
 const activeUserCSVWriter = createCsvWriter({
@@ -129,8 +131,12 @@ async function getUserNameListInConversation(channelId) {
             const userIDArray = data.members;
             for(let i=0;i<data.members.length;i++) {
                 const userId = data.members[i];
-                const user = await getUserInfo(userId);
-                userNameArray.push(user.profile.real_name);
+                logger.info(`Channel ID:${channelId} is searching User ID: ${userId}'s info...`);
+                const result = searchUserInfoInJson(userId);
+                if (result && result.length > 0) {
+                    const user = result[0];
+                    userNameArray.push(user.profile.real_name);
+                }
             }
 
             return {
@@ -144,8 +150,27 @@ async function getUserNameListInConversation(channelId) {
     }
 }
 
+/**
+ * Search User Info in `users.json` file
+ * @param userId
+ * @returns {Object[]}
+ */
+function searchUserInfoInJson(userId) {
+    try {
+        const usesJsonFilePath = `${FOLDER.USERS}/users.json`;
+        const userList = fs.readFileSync(usesJsonFilePath, 'utf8');
+        const result = _.filter(userList, (user) => user.id === userId);
+        return result;
+    } catch (err) {
+        logger.error(`Search User Info By ID:${userId} Error: ${err}`);
+        return null;
+    }
+
+}
+
 module.exports = {
     getUserInfo,
     getUserNameListInConversation,
-    getUserList
+    getUserList,
+    searchUserInfoInJson
 };

@@ -5,7 +5,7 @@ const {
 } = require("./constants");
 const jsonfile = require("jsonfile");
 const fs = require("fs");
-const {getUserInfo, getUserNameListInConversation} = require("./users");
+const {getUserInfo, getUserNameListInConversation, searchUserInfoInJson} = require("./users");
 const {processDownloadThreadFiles, createFileFolder} = require("./downloadfile");
 const logger = require("./log");
 const _ = require('lodash');
@@ -45,7 +45,8 @@ function getCSVWriter(type) {
                 archiveCSVWriter: createCsvWriter({
                     path: `${FOLDER.PUBLIC_CHANNELS_PATH}/archiveList.csv`,
                     header: [
-                        {id: 'id', title: 'DM ID'},
+                        {id: 'id', title: 'Archive Public Channel ID'},
+                        {id: 'name', title: 'Archive Public Channel Name'},
                         {id: 'userid', title: 'Slack User IDs'},
                         {id: 'username', title: 'Slack User Names'},
                     ]
@@ -53,7 +54,8 @@ function getCSVWriter(type) {
                 unarchiveCSVWriter: createCsvWriter({
                     path: `${FOLDER.PUBLIC_CHANNELS_PATH}/unArchiveList.csv`,
                     header: [
-                        {id: 'id', title: 'Multi DM ID'},
+                        {id: 'id', title: 'Public Channel ID'},
+                        {id: 'name', title: 'Public Channel Name'},
                         {id: 'userid', title: 'Slack User IDs'},
                         {id: 'username', title: 'Slack User Names'},
                     ]
@@ -64,7 +66,8 @@ function getCSVWriter(type) {
                 archiveCSVWriter: createCsvWriter({
                     path: `${FOLDER.PRIVATE_CHANNELS_PATH}/archiveList.csv`,
                     header: [
-                        {id: 'id', title: 'DM ID'},
+                        {id: 'id', title: 'Archive Private Channel ID'},
+                        {id: 'name', title: 'Archive Private Channel Name'},
                         {id: 'userid', title: 'Slack User IDs'},
                         {id: 'username', title: 'Slack User Names'},
                     ]
@@ -72,7 +75,8 @@ function getCSVWriter(type) {
                 unarchiveCSVWriter: createCsvWriter({
                     path: `${FOLDER.PRIVATE_CHANNELS_PATH}/unArchiveList.csv`,
                     header: [
-                        {id: 'id', title: 'Multi DM ID'},
+                        {id: 'id', title: 'Private Channel ID'},
+                        {id: 'name', title: 'Private Channel Name'},
                         {id: 'userid', title: 'Slack User IDs'},
                         {id: 'username', title: 'Slack User Names'},
                     ]
@@ -83,7 +87,7 @@ function getCSVWriter(type) {
                 archiveCSVWriter: createCsvWriter({
                     path: `${FOLDER.MULTI_DIRECT_MESSAGE_PATH}/archiveList.csv`,
                     header: [
-                        {id: 'id', title: 'DM ID'},
+                        {id: 'id', title: 'Archive Multi DM ID'},
                         {id: 'userid', title: 'Slack User IDs'},
                         {id: 'username', title: 'Slack User Names'},
                     ]
@@ -126,13 +130,13 @@ async function getThreadListByType(channelType) {
 
             if (data.ok) {
                 for (let i = 0; i < data.channels.length; i++) {
-                    if (CHANNEL_TYPE.name === 'im') {
+                    if (CHANNEL_TYPE.name === 'im') { // Direct Message
                         const user = await getUserInfo(data.channels[i].user);
                         const imJSON = {
                             id: data.channels[i].id,
                             userid: data.channels[i].user,
-                            username: user.profile.real_name,
-                            isbot: user.is_bot
+                            username: user ? user.profile.real_name : data.channels[i].user,
+                            isbot: user ? user.is_bot : false
                         }
                         if (data.channels[i].is_archived) {
                             archiveList.push(data.channels[i]);
@@ -141,13 +145,32 @@ async function getThreadListByType(channelType) {
                             unArchiveList.push(data.channels[i]);
                             unarchiveJSON.push(imJSON);
                         }
-                    } else {
+                    } else if (CHANNEL_TYPE.name === 'mpim') { // Multi Direct Message
+                        logger.info(`Multi Direct Message Channel Id:${data.channels[i].id} is starting to get user list in this channel`)
                         const userArrayObject = await getUserNameListInConversation(data.channels[i].id);
 
                         const mdmJSON = {
                             id: data.channels[i].id,
                             userid: userArrayObject.id.toString(),
                             username: userArrayObject.name.toString()
+                        }
+
+                        if (data.channels[i].is_archived) {
+                            archiveList.push(data.channels[i]);
+                            archiveJSON.push(mdmJSON);
+                        } else {
+                            unArchiveList.push(data.channels[i]);
+                            unarchiveJSON.push(mdmJSON);
+                        }
+                    } else {
+                        logger.info(`${CHANNEL_TYPE.name} Channel Id:${data.channels[i].id} is starting to get user list in this channel`)
+                        const channelUserArrayObject = await getUserNameListInConversation(data.channels[i].id);
+
+                        const mdmJSON = {
+                            id: data.channels[i].id,
+                            name: data.channels[i].name,
+                            userid: channelUserArrayObject.id.toString(),
+                            username: channelUserArrayObject.name.toString()
                         }
 
                         if (data.channels[i].is_archived) {
