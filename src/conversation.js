@@ -31,7 +31,7 @@ function getCSVWriter(type) {
                     ]
                 }),
                 unarchiveCSVWriter: createCsvWriter({
-                    path: `${FOLDER.DIRECT_MESSAGE_PATH}/archiveList.csv`,
+                    path: `${FOLDER.DIRECT_MESSAGE_PATH}/unArchiveList.csv`,
                     header: [
                         {id: 'id', title: 'DM ID'},
                         {id: 'userid', title: 'Slack User ID'},
