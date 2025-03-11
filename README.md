@@ -10,6 +10,27 @@
 - `direct_message`- 1:1 Private Chat Data
 - `multi_direct_message` - Private chat for more than 2 people Data
 ---
+## Folder `users`
+
+**Note**: Please run command to get user data at first. The user data will be used when fetch channel data
+
+Here're 4 json files and 3 csv files
+- `active_users.json`
+- `bot_users.json`
+- `delete_users.json`
+- `users.json` This is collection file, it includes `active_users.json` `bot_users.json` `delete_users.json`
+
+CSV Files is checklist
+- `active_users.csv`
+- `bot_users.csv`
+- `delete_user.csv`
+
+### Command
+```
+npm run users
+```
+
+---
 ## 4 Channel Type's Data Directory Description
 Here are 4 channel types
 - `public_channel`
@@ -61,20 +82,5 @@ Each type has same folder structure as below:
 
 
 ---
-## Folder `users` 
-Here're 4 json files and 3 csv files 
-- `active_users.json` 
-- `bot_users.json`
-- `delete_users.json` 
-- `users.json` This is collection file, it includes `active_users.json` `bot_users.json` `delete_users.json`
 
-CSV Files is checklist
-- `active_users.csv`
-- `bot_users.csv`
-- `delete_user.csv`
-
-### Command
-```
-npm run users
-```
 
