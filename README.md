@@ -75,12 +75,27 @@ Each type has same folder structure as below:
 - This CSV list records all the file URLs uploaded in threads and replies, the downloaded file paths, and the corresponding relationships of the files to their respective channels, threads, or reply messages
 
 ### Command
-- `npm run public` Get Public Channel Data
-- `npm run private` Get Private Channel Data
-- `npm run dm` Get Direct Message Data
-- `npm run mdm` Get Multi Direct Message Data
-
-
+Each type has 2 commands
+#### Get Public Channel Data
+```
+npm run public -- --step=channel
+npm run public -- --step=data
+```
+#### Get Private Channel Data
+```
+npm run private -- --step=channel
+npm run private -- --step=data
+```
+#### Get Direct Message Data
+```
+npm run dm -- --step=channel
+npm run dm -- --step=data
+```
+#### Get Multi Direct Message Data
+```
+npm run mdm -- --step=channel
+npm run mdm -- --step=data
+```
 ---
 
 

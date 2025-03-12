@@ -1,4 +1,5 @@
 const async = require("async");
+const minimist = require('minimist');
 const {getThreadListByType, getThreadsAndAllMessagesWithFiles} = require("../conversation");
 const {getFilesInAllMessages} = require("../downloadfile");
 const {CHANNEL_TYPE} = require("../constants");
@@ -46,11 +47,22 @@ function step5(callback) {
 
 // 分步骤执行
 async function runSteps() {
-    try {
-        const results = await async.series([step1, step2,step3,step4,step5]);
-        logger.info(`Direct Message All steps completed! ${results}`);
-    } catch (err) {
-        logger.error("分步骤执行 Error:", err);
+    const args = minimist(process.argv.slice(2));
+    logger.info(`执行命令参数 ${JSON.stringify(args)}`);
+    if (args.step === 'channel') {
+        try {
+            const results = await async.series([step1]);
+            logger.info(`Step 1. Direct Message gel all channel list completed! Please confirm the channel list, which will be exported`);
+        } catch (err) {
+            logger.error("分步骤执行 Error:", err);
+        }
+    } else if(args.step === 'data') {
+        try {
+            const results = await async.series([step2, step3, step4, step5]);
+            logger.info(`Direct Message get all selected channel's messages completed! ${results}`);
+        } catch (err) {
+            logger.error("分步骤执行 Error:", err);
+        }
     }
 }
 

@@ -28,6 +28,8 @@ function getCSVWriter(type) {
                         {id: 'userid', title: 'Slack User ID'},
                         {id: 'username', title: 'Slack User Name'},
                         {id: 'isbot', title: 'Slack Bot'},
+                        {id: 'export', title: 'Need Export?'}
+
                     ]
                 }),
                 unarchiveCSVWriter: createCsvWriter({
@@ -37,6 +39,7 @@ function getCSVWriter(type) {
                         {id: 'userid', title: 'Slack User ID'},
                         {id: 'username', title: 'Slack User Name'},
                         {id: 'isbot', title: 'Slack Bot'},
+                        {id: 'export', title: 'Need Export?'}
                     ]
                 })
             }
@@ -49,6 +52,7 @@ function getCSVWriter(type) {
                         {id: 'name', title: 'Archive Public Channel Name'},
                         {id: 'userid', title: 'Slack User IDs'},
                         {id: 'username', title: 'Slack User Names'},
+                        {id: 'export', title: 'Need Export?'},
                     ]
                 }),
                 unarchiveCSVWriter: createCsvWriter({
@@ -58,6 +62,7 @@ function getCSVWriter(type) {
                         {id: 'name', title: 'Public Channel Name'},
                         {id: 'userid', title: 'Slack User IDs'},
                         {id: 'username', title: 'Slack User Names'},
+                        {id: 'export', title: 'Need Export?'},
                     ]
                 })
             }
@@ -70,6 +75,7 @@ function getCSVWriter(type) {
                         {id: 'name', title: 'Archive Private Channel Name'},
                         {id: 'userid', title: 'Slack User IDs'},
                         {id: 'username', title: 'Slack User Names'},
+                        {id: 'export', title: 'Need Export?'},
                     ]
                 }),
                 unarchiveCSVWriter: createCsvWriter({
@@ -79,6 +85,7 @@ function getCSVWriter(type) {
                         {id: 'name', title: 'Private Channel Name'},
                         {id: 'userid', title: 'Slack User IDs'},
                         {id: 'username', title: 'Slack User Names'},
+                        {id: 'export', title: 'Need Export?'},
                     ]
                 })
             }
@@ -90,6 +97,7 @@ function getCSVWriter(type) {
                         {id: 'id', title: 'Archive Multi DM ID'},
                         {id: 'userid', title: 'Slack User IDs'},
                         {id: 'username', title: 'Slack User Names'},
+                        {id: 'export', title: 'Need Export?'},
                     ]
                 }),
                 unarchiveCSVWriter: createCsvWriter({
@@ -98,6 +106,7 @@ function getCSVWriter(type) {
                         {id: 'id', title: 'Multi DM ID'},
                         {id: 'userid', title: 'Slack User IDs'},
                         {id: 'username', title: 'Slack User Names'},
+                        {id: 'export', title: 'Need Export?'}
                     ]
                 })
             }
@@ -136,7 +145,8 @@ async function getThreadListByType(channelType) {
                             id: data.channels[i].id,
                             userid: data.channels[i].user,
                             username: user ? user.profile.real_name : data.channels[i].user,
-                            isbot: user ? user.is_bot : false
+                            isbot: user ? user.is_bot : false,
+                            export: true //default value
                         }
                         if (data.channels[i].is_archived) {
                             archiveList.push(data.channels[i]);
@@ -152,7 +162,8 @@ async function getThreadListByType(channelType) {
                         const mdmJSON = {
                             id: data.channels[i].id,
                             userid: userArrayObject.id.toString(),
-                            username: userArrayObject.name.toString()
+                            username: userArrayObject.name.toString(),
+                            export: true //default value
                         }
 
                         if (data.channels[i].is_archived) {
@@ -170,7 +181,8 @@ async function getThreadListByType(channelType) {
                             id: data.channels[i].id,
                             name: data.channels[i].name,
                             userid: channelUserArrayObject.id.toString(),
-                            username: channelUserArrayObject.name.toString()
+                            username: channelUserArrayObject.name.toString(),
+                            export: true //default value
                         }
 
                         if (data.channels[i].is_archived) {
