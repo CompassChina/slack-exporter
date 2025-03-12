@@ -6,7 +6,7 @@ const {CHANNEL_TYPE} = require("../constants");
 const logger = require("../log");
 
 function step1(callback) {
-    logger.info("Step 1: Direct Message 获取Thread List");
+    logger.info("Step 1: Direct Message 获取Channel List");
     setTimeout(async () => {
         await getThreadListByType(CHANNEL_TYPE.DIRECT_MESSAGE);
         callback(null, "Step 1 Done");

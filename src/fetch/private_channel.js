@@ -6,7 +6,7 @@ const async = require("async");
 const minimist = require("minimist");
 
 function step1(callback) {
-    logger.info("Step 1: Private Channel 获取Thread List");
+    logger.info("Step 1: Private Channel 获取Channel List");
     setTimeout(async () => {
         await getThreadListByType(CHANNEL_TYPE.PRIVATE_CHANNEL);
         callback(null, "Step 1 Done");
