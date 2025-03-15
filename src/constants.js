@@ -26,6 +26,7 @@ const FOLDER = {
     PRIVATE_CHANNELS_PATH: './json_data/channels/private_channels',
     PUBLIC_CHANNELS_PATH: './json_data/channels/public_channels',
     USERS: './json_data/users',
+    ROOT_PATH: './json_data'
 };
 
 const CHANNEL_TYPE = {

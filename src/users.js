@@ -1,4 +1,5 @@
 const {OPTIONS_GET, SLACK_API, FOLDER} = require("./constants");
+const { compressDataFile } = require("./downloadfile");
 const jsonfile = require("jsonfile");
 const logger = require("./log");
 const fs = require("jsonfile");
@@ -89,6 +90,8 @@ async function getUserList() {
                 .then(() => {
                     logger.info(`Bot User list CSV Done`);
                 });
+
+            compressDataFile(FOLDER.USERS, `${FOLDER.ROOT_PATH}/users.zip`);
         }
     } catch (ex) {
         logger.error(`Get Slack Users List Error: ${ex}`);

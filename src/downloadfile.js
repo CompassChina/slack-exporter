@@ -3,6 +3,7 @@ const https = require('https');
 const path = require('path');
 const _ = require('lodash');
 const axios = require('axios');
+const archiver = require('archiver');
 const {SLACK_TOKEN, FOLDER} = require("./constants");
 const {createObjectCsvWriter: createCsvWriter} = require("csv-writer");
 const logger = require("./log");
@@ -200,9 +201,47 @@ async function getFilesInAllMessages(channelType, isArchived = false) {
     });
 }
 
+/**
+ * Compress Data File
+ * @param {*} sourceFolder
+ * @param {*} outputFilePath
+ */
+function compressDataFile(sourceFolder, outputFilePath) {
+    try {
+        logger.info(`Compress Folder: ${sourceFolder}`);
+        logger.info(`Compress File: ${outputFilePath}`);
+        // 创建一个可写流，用于写入压缩文件
+        const output = fs.createWriteStream(outputFilePath);
+        // 初始化 archiver，设置压缩格式为 zip
+        const archive = archiver('zip', {zlib: { level: 9 }});  // 设置压缩级别（0-9，9 是最高压缩率）
+        // 监听压缩完成事件
+        output.on('close', () => {
+            logger.info(`${outputFilePath} compress Done，file Size：${archive.pointer()} Bytes`);
+        });
+
+        // 监听错误事件
+        archive.on('error', (err) => {
+            throw err;
+        });
+
+        // 将压缩文件与输出流关联
+        archive.pipe(output);
+
+        // 添加文件夹到压缩包中
+        archive.directory(sourceFolder,false); // 第二个参数为 false 表示不包含根目录
+
+        // 完成压缩
+        archive.finalize();
+    } catch (ex) {
+        logger.error(`Compress Data Folder:${sourceFolder}, Zip File:${outputFilePath}, Error:${ex}`);
+    }
+
+}
+
 module.exports = {
     processDownloadThreadFiles,
     createFileFolder,
     filterThreadsHasFiles,
-    getFilesInAllMessages
+    getFilesInAllMessages,
+    compressDataFile
 }

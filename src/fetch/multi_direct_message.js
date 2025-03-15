@@ -1,6 +1,6 @@
 const {getThreadListByType, getThreadsAndAllMessagesWithFiles} = require("../conversation");
-const {getFilesInAllMessages} = require("../downloadfile");
-const {CHANNEL_TYPE} = require("../constants");
+const {getFilesInAllMessages, compressDataFile} = require("../downloadfile");
+const {CHANNEL_TYPE, FOLDER} = require("../constants");
 const logger = require("../log");
 const async = require("async");
 const minimist = require("minimist");
@@ -45,6 +45,14 @@ function step5(callback) {
     }, 1000);
 }
 
+function step6(callback) {
+    logger.info("Step 6: Multi Direct Message 频道，压缩已下载完成的所有数据文件");
+    setTimeout(() => {
+        compressDataFile(FOLDER.MULTI_DIRECT_MESSAGE_PATH, `${FOLDER.ROOT_PATH}/multi_direct_message.zip`);
+        callback(null, "Step 6 Done");
+    }, 1000);
+}
+
 // 分步骤执行
 async function runSteps() {
     const args = minimist(process.argv.slice(2));
@@ -58,7 +66,7 @@ async function runSteps() {
         }
     } else if(args.step === 'data') {
         try {
-            const results = await async.series([step2,step3,step4,step5]);
+            const results = await async.series([step2,step3,step4,step5,step6]);
             logger.info(`Multi Direct Message get all selected channel's messages completed! ${results}`);
         } catch (err) {
             logger.error("分步骤执行 Error:", err);
