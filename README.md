@@ -97,5 +97,12 @@ npm run mdm -- --step=channel
 npm run mdm -- --step=data
 ```
 ---
+### Combine the split zip files
+After the data pull is completed, split zip files larger than 500M, and place the split files in the channletype_split_zipfiles directory
 
+e.g. `public_channle_split_zipfiles` in `json_data` folder
 
+#### Combine files
+```
+cat direct_message_part_* > direct_message.zip
+```
