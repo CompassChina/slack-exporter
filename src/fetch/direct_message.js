@@ -2,7 +2,7 @@ const async = require("async");
 const minimist = require('minimist');
 const {getThreadListByType, getThreadsAndAllMessagesWithFiles} = require("../conversation");
 const {getFilesInAllMessages, compressDataFile} = require("../downloadfile");
-const {CHANNEL_TYPE, FOLDER} = require("../constants");
+const {CHANNEL_TYPE, FOLDER, SPLIT} = require("../constants");
 const logger = require("../log");
 
 function step1(callback) {
@@ -48,7 +48,7 @@ function step5(callback) {
 function step6(callback) {
     logger.info("Step 6: Direct Message 频道，压缩已下载完成的所有数据文件");
     setTimeout(() => {
-        compressDataFile(FOLDER.DIRECT_MESSAGE_PATH, `${FOLDER.ROOT_PATH}/direct_message.zip`);
+        compressDataFile(FOLDER.DIRECT_MESSAGE_PATH, `${FOLDER.ROOT_PATH}/direct_message.zip`, 'direct_message');
         callback(null, "Step 6 Done");
     }, 1000);
 }

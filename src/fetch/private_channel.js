@@ -48,7 +48,7 @@ function step5(callback) {
 function step6(callback) {
     logger.info("Step 6: Private Channel 频道，压缩已下载完成的所有数据文件");
     setTimeout(() => {
-        compressDataFile(FOLDER.PRIVATE_CHANNELS_PATH, `${FOLDER.ROOT_PATH}/private_channel.zip`);
+        compressDataFile(FOLDER.PRIVATE_CHANNELS_PATH, `${FOLDER.ROOT_PATH}/private_channel.zip`, 'private_channel');
         callback(null, "Step 6 Done");
     }, 1000);
 }

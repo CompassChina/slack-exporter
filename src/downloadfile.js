@@ -4,10 +4,10 @@ const path = require('path');
 const _ = require('lodash');
 const axios = require('axios');
 const archiver = require('archiver');
-const {SLACK_TOKEN, FOLDER} = require("./constants");
+const {SLACK_TOKEN, FOLDER, SPLIT} = require("./constants");
 const {createObjectCsvWriter: createCsvWriter} = require("csv-writer");
 const logger = require("./log");
-const {parseFilePath, getFilesInFolderSync} = require("./utils");
+const {parseFilePath, getFilesInFolderSync, checkFileSize, splitZipFile, splitFileStream} = require("./utils");
 
 /**
  * Find the threads that have file
@@ -205,8 +205,9 @@ async function getFilesInAllMessages(channelType, isArchived = false) {
  * Compress Data File
  * @param {*} sourceFolder
  * @param {*} outputFilePath
+ * @param {*} channelType
  */
-function compressDataFile(sourceFolder, outputFilePath) {
+function compressDataFile(sourceFolder, outputFilePath, channelType) {
     try {
         logger.info(`Compress Folder: ${sourceFolder}`);
         logger.info(`Compress File: ${outputFilePath}`);
@@ -217,6 +218,13 @@ function compressDataFile(sourceFolder, outputFilePath) {
         // 监听压缩完成事件
         output.on('close', () => {
             logger.info(`${outputFilePath} compress Done，file Size：${archive.pointer()} Bytes`);
+
+            const zipFileSize = checkFileSize(outputFilePath);
+            if (zipFileSize && zipFileSize > SPLIT.FILE_SIZE) {
+                logger.info('Starting split the zip file……');
+                createFileFolder(`${FOLDER.ROOT_PATH}/${channelType}_${SPLIT.FOLDER_NAME}`);
+                splitZipFile(outputFilePath, `${FOLDER.ROOT_PATH}/${channelType}_${SPLIT.FOLDER_NAME}`, channelType);
+            }
         });
 
         // 监听错误事件

@@ -48,7 +48,7 @@ function step5(callback) {
 function step6(callback) {
     logger.info("Step 6: Public Channel 频道，压缩已下载完成的所有数据文件");
     setTimeout(() => {
-        compressDataFile(FOLDER.PUBLIC_CHANNELS_PATH, `${FOLDER.ROOT_PATH}/multi_direct_message.zip`);
+        compressDataFile(FOLDER.PUBLIC_CHANNELS_PATH, `${FOLDER.ROOT_PATH}/public_channel.zip`, 'public_channel');
         callback(null, "Step 6 Done");
     }, 1000);
 }

@@ -48,7 +48,7 @@ function step5(callback) {
 function step6(callback) {
     logger.info("Step 6: Multi Direct Message 频道，压缩已下载完成的所有数据文件");
     setTimeout(() => {
-        compressDataFile(FOLDER.MULTI_DIRECT_MESSAGE_PATH, `${FOLDER.ROOT_PATH}/multi_direct_message.zip`);
+        compressDataFile(FOLDER.MULTI_DIRECT_MESSAGE_PATH, `${FOLDER.ROOT_PATH}/multi_direct_message.zip`, 'multi_direct_message');
         callback(null, "Step 6 Done");
     }, 1000);
 }

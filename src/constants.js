@@ -1,5 +1,11 @@
 const SLACK_TOKEN = '替换自己的token到这里';
 
+const SPLIT = {
+    FILE_SIZE: '500', //500M
+    FOLDER_NAME: 'split_zipfiles',
+    OUTPUT_PREFIX: '_part_',
+};
+
 const OPTIONS_GET = {
     method: 'get',
     contentType: 'application/json',
@@ -69,4 +75,5 @@ module.exports = {
     SLACK_API,
     CHANNEL_TYPE,
     LIMIT,
+    SPLIT
 }
