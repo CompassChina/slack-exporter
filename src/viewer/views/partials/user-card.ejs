@@ -1,0 +1,11 @@
+<% const user = getUserById(id) %>
+<% if (!user) { %>
+  <span class="user-card">Unknown user</span>
+<% } else { %>
+  <span class="user-card">
+    <% if (user?.is_bot) { %>
+      🤖
+    <% } %>
+    <%= getUsernameById(id) %>
+  </span>
+<% } %>

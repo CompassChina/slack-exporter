@@ -1,0 +1,11 @@
+<%- include('partials/header') %>
+
+<main>
+  <section class="message-list">
+    <% messageGroups.forEach(function(group) { %>
+      <%- include('partials/message-group', {group}) %>
+    <% }) %>
+  </section>
+</main>
+
+<%- include('partials/footer') %>

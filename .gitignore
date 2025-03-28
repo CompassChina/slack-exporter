@@ -43,3 +43,6 @@ next-env.d.ts
 .error.log
 .info.log
 .idea
+error.log
+info.log
+/json_data

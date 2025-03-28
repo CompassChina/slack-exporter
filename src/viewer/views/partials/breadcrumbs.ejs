@@ -1,0 +1,6 @@
+<% breadcrumbs.forEach((crumb, i) => { %>
+  <a href="<%= crumb.href %>"><%= crumb.text %></a>
+  <% if (i < breadcrumbs.length - 1) { %>
+    <span> / </span>
+  <% } %>
+<% }) %>

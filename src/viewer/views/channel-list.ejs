@@ -1,0 +1,23 @@
+<%- include('partials/header') %>
+
+<main>
+  <ol>
+    <% data[type].forEach(function(item) { %>
+    <li>
+      <a href="/list/<%= type %>/channel/<%= item.id %>">
+        <% if (type === 'direct_message') { %>
+          <%- include('partials/user-card', {id: item.user}) %>
+        <% } else { %>
+          <%= getChannelName(type, item) %>
+        <% } %>
+      </a>
+      <% if (type === 'multi_direct_message' && item.purpose.creator) { %>
+        <span class="message-tip">Created by <%- include('partials/user-card', {id: item.purpose.creator}) %></span>
+      <% } %>
+      <span class="message-timestamp" title="last updated"><%= formatDate(item.updated) %></span>
+    </li>
+    <% }) %>
+  </ol>
+</main>
+
+<%- include('partials/footer') %>

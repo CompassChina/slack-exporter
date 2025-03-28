@@ -1,0 +1,42 @@
+<% const msgId = `msg-${message.ts}` %>
+<div class="message" data-index="<%= index %>" data-ts="<%= message.ts %>">
+  <a class="message-anchor" name="<%= msgId %>"></a>
+  <div class="message-header">
+    <%- include('user-card', {id: message.user}) %>
+    <span class="message-timestamp"
+      ><%= formatDate(parseFloat(group.name)* 1000) %></span
+    >
+    <a href="#<%= msgId %>" class="message-link">#</a>
+    <a href="<%= `/json_data/${type}/unarchive/messages/${channelId}/${message.ts}/${message.ts}.json` %>" target="_blank" class="message-link">{}</a>
+  </div>
+  <pre class="message-body"><%- formatMessage(message.text) %></pre>
+  <% if (message.files?.length) { %>
+  <div class="message-files">
+    files:
+    <ul>
+    <% message.files.forEach(function(file, index) { %>
+      <li>
+        <a href="<%= `/json_data/${type}/unarchive/messages/${channelId}/${message.ts}/files/${message.ts}_${index}.${getExtName(file?.url_private)}` %>" target="_blank">
+          <%= file.name %>
+        </a>
+      </li>
+    <% }) %>
+    </ul>
+  </div>
+  <% } %>
+  <% if (message.reactions) { %>
+  <div class="reactions">
+    <% message.reactions.forEach(function(reaction) { %>
+    <span
+      class="reaction"
+      data-emoji="<%= reaction.name %>"
+      title="<%= reaction.users.map(id => getUsernameById(id)).join(', ') %>"
+    >
+      <%= getEmoji(reaction.name) %><% if (reaction.count > 1) { %>
+        <span class="count"><%= reaction.count%></span>
+      <% } %>
+    </span>
+    <% }) %>
+  </div>
+  <% } %>
+</div>

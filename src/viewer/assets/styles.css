@@ -1,0 +1,169 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  position: relative;
+}
+
+header {
+  padding: 16px;
+  position: sticky;
+  z-index: 1;
+  top: 0;
+  background-color: #f8f9fa;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+nav {
+  margin-right: 150px;
+}
+
+h1 {
+  margin: 16px 0 0 0;
+  font-size: 28px;
+}
+
+nav, h1 {
+  text-wrap-mode: nowrap;
+  overflow: auto;
+}
+
+.debug-info {
+  position: absolute;
+  right: 8px;
+  top: 8px;
+  padding: 8px;
+  width: 140px;
+  background-color: #f8f9fa;
+  text-align: right;
+  font-size: 12px;
+  color: #6c757d;
+  border-radius: 2px;
+}
+
+.message-group {
+  margin-top: 16px;
+}
+
+.message-group summary {
+  cursor: pointer;
+}
+
+.message-list {
+  padding: 0 8px;
+}
+
+.message {
+  position: relative;
+  margin-left: 24px;
+}
+
+.message-files {
+  margin: 0 8px;
+}
+
+.message-files ul {
+  margin: 8px 0;
+  list-style-type: circle;
+}
+
+.message summary {
+  cursor: pointer;
+}
+
+.message-anchor {
+  position: absolute;
+  top: -100px;
+  width: 1px;
+  height: 1px;
+}
+
+.threaded-messages {
+  margin-left: 16px;
+}
+
+.message[data-index="0"] {
+  margin-left: 0;
+}
+
+.message-header {
+  padding: 0 8px;
+}
+
+.message-header .user-card {
+  font-weight: bold;
+}
+
+.message-header a,
+.message-header a:visited
+{
+  color: #6c757d;
+  font-size: 12px;
+}
+
+.mention {
+  color: #007bff;
+}
+
+.message-timestamp, .message-tip {
+  font-size: 0.8em;
+  color: #6c757d;
+  margin-left: 8px;
+}
+
+.reactions {
+  margin: 4px 8px;
+}
+
+.reaction {
+  display: inline-block;
+  border-radius: 16px;
+  border: 1px solid #ccc;
+  background-color: #f8f9fa;
+  color: #6c757d;
+  line-height: 20px;
+  padding: 2px 8px;
+}
+
+.reaction .count {
+  font-size: 12px;
+}
+
+.message-body {
+  margin: 0;
+  padding: 0.5em;
+  border-radius: 5px;
+  background-color: #f8f9fa;
+  line-height: 1.8;
+}
+
+.message-body code, .message-body pre {
+  font-family: monospace;
+  border-radius: 3px;
+  padding: 0 0.2em;
+}
+
+.message-body code {
+  color: #e83e8c;
+  border: 0.5px solid #e83e8c;
+}
+
+pre.message-body {
+  color: #333;
+  background-color: #f8f9fa;
+  word-break: break-word;
+  white-space: pre-wrap;
+  margin: 0;
+  padding: 8px 12px;
+}
+
+footer {
+  border-top: 1px solid #ccc;
+  margin-top: 16px;
+  padding: 16px;
+  color: #6c757d;
+  background-color: #f8f9fa;
+}

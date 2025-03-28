@@ -1,0 +1,11 @@
+<%- include('partials/header') %>
+
+<main>
+  <ul>
+    <% Object.entries(messageTypes).forEach(function([type, title]) { %>
+      <li><a href="/list/<%= type %>"><%= title %></a></li>
+    <% }) %>
+  </ul>
+</main>
+
+<%- include('partials/footer') %>

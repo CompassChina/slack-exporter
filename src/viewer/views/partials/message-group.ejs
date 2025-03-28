@@ -1,0 +1,12 @@
+<div class="message-group" data-ts="<%= group.name %>">
+  <% const [message, ...threadedMessages] = group.messages %>
+  <%- include('message', {message, index: 0}) %>
+  <% if (threadedMessages.length > 0) { %>
+    <details class="threaded-messages">
+      <summary><%= threadedMessages.length %> replies</summary>
+      <% threadedMessages.forEach(function(message, index) { %>
+        <%- include('message', {message, index: index + 1}) %>
+      <% }) %>
+    </details>
+  <% } %>
+</div>
