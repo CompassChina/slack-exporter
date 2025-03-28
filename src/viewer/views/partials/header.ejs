@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title><%= title %> | Slack Viewer</title>
+  <link rel="stylesheet" href="/assets/styles.css" ></link>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <nav><%- include('./breadcrumbs') %></nav>
+      <div class="debug-info">
+        <div>page rendered in <%= getRenderTime() %>s</div>
+        <div>total <%= count %> items</div>
+      </div>
+      <h1><%= title %></h1>
+    </header>

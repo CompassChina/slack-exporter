@@ -6,17 +6,24 @@
     "mdm": "node src/fetch/multi_direct_message.js",
     "private": "node src/fetch/private_channel.js",
     "public": "node src/fetch/public_channel.js",
-    "users": "node src/fetch/user.js"
+    "users": "node src/fetch/user.js",
+    "viewer": "OPEN=true node src/viewer/index.js",
+    "viewer:dev": "nodemon src/viewer/index.js"
   },
   "dependencies": {
     "archiver": "^7.0.1",
     "async": "^3.2.6",
     "axios": "^1.8.1",
+    "csv-parse": "^5.6.0",
     "csv-writer": "^1.6.0",
+    "ejs": "^3.1.10",
+    "emoji-name-map": "^2.0.1",
+    "express": "^4.21.2",
     "jsonfile": "^6.1.0",
     "lodash": "^4.17.21",
     "minimist": "^1.2.8",
     "moment-timezone": "^0.5.47",
+    "nodemon": "^3.1.9",
     "winston": "^3.17.0"
   }
 }
