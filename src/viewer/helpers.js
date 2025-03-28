@@ -39,9 +39,9 @@ exports.getChannelName = function(type, channel) {
     case "public_channel":
     case "private_channel":
       return `#${channel.name}`;
-    case "direct_message":
+    case "im":
       return this.getUsernameById(channel.user);
-    case "multi_direct_message":
+    case "mpim":
       return channel?.purpose?.value ?? channel.name;
     default:
       return "Unknown";

@@ -1,17 +1,20 @@
 <%- include('partials/header') %>
 
 <main>
-  <ol>
+  <ol class="channel-list">
     <% data[type].forEach(function(item) { %>
     <li>
+      <% if (item.is_archived) { %>
+        <span class="tag">archived</span>
+      <% } %>
       <a href="/list/<%= type %>/channel/<%= item.id %>">
-        <% if (type === 'direct_message') { %>
+        <% if (type === 'im') { %>
           <%- include('partials/user-card', {id: item.user}) %>
         <% } else { %>
           <%= getChannelName(type, item) %>
         <% } %>
       </a>
-      <% if (type === 'multi_direct_message' && item.purpose.creator) { %>
+      <% if (type === 'mpim' && item.purpose.creator) { %>
         <span class="message-tip">Created by <%- include('partials/user-card', {id: item.purpose.creator}) %></span>
       <% } %>
       <span class="message-timestamp" title="last updated"><%= formatDate(item.updated) %></span>
