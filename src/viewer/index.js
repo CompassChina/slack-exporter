@@ -1,28 +1,42 @@
 const express = require("express");
 const jsonFile = require("jsonfile");
 const path = require("node:path");
-const helpers = require("./helpers");
 const fs = require("node:fs");
 const { parse: parseCSV } = require("csv-parse/sync");
+const { CHANNEL_TYPE, FOLDER } = require("../constants");
+const helpers = require("./helpers");
 
 const PORT = parseInt(process.env.PORT) || 3000;
 const HOSTNAME = parseInt(process.env.HOSTNAME) || "127.0.0.1";
 const OPEN = Boolean(process.env.OPEN) || false;
 const DATA_DIR = "json_data/";
 
-const messageTypes = {
-  direct_message: "Direct Messages",
-  multi_direct_message: "Multi Direct Messages (Groups)",
+const channelNames = {
+  im: "Direct Messages",
+  mpim: "Multi Direct Messages (Groups)",
   private_channel: "Private Channels",
   public_channel: "Public Channels",
 };
 
+const CHANNEL_NAME_MAP = Object.fromEntries(
+  Object.entries(CHANNEL_TYPE).map(([key, value]) => [value.name, key])
+);
+
+const getDataSource = (type) => {
+  return CHANNEL_TYPE[CHANNEL_NAME_MAP[type]].ROOT_PATH;
+};
+
+const getAssetRootUrl = (type) => {
+  return getDataSource(type).replace(/^\.\//, "");
+};
+
 const readJSON = (filepath, fallback = []) => {
-  const fullPath = path.resolve(DATA_DIR, filepath);
   try {
-    return jsonFile.readFileSync(fullPath);
+    const data = jsonFile.readFileSync(filepath);
+    // console.log(`Successfully read JSON file: ${filepath}`);
+    return data;
   } catch (error) {
-    console.error(`Failed to read JSON file: ${fullPath}`);
+    console.error(`Failed to read JSON file: ${filepath}`);
     return fallback;
   }
 };
@@ -39,29 +53,15 @@ const readCSV = (filepath, fallback = []) => {
 };
 
 const data = {
-  users: [
-    ...readJSON("users/users.json"),
-    ...readJSON("users/botUsers.json"),
-    ...readJSON("users/deletedUsers.json"),
-  ],
-  direct_message: [
-    ...readJSON("direct_message/unArchiveList.json"),
-    ...readJSON("direct_message/archiveList.json"),
-  ],
-  multi_direct_message: readJSON("multi_direct_message/unArchiveList.json"),
-  private_channel: readJSON("private_channel/unArchiveList.json"),
-  public_channel: readJSON("public_channel/unArchiveList.json"),
-  // Not required for now
-  // files: [
-  //   ...readCSV("direct_message/unarchive/files.csv"),
-  //   ...readCSV("direct_message/archive/files.csv"),
-  //   ...readCSV("multi_direct_message/unarchive/files.csv"),
-  //   ...readCSV("multi_direct_message/archive/files.csv"),
-  //   ...readCSV("private_channel/unarchive/files.csv"),
-  //   ...readCSV("private_channel/archive/files.csv"),
-  //   ...readCSV("public_channel/unarchive/files.csv"),
-  //   ...readCSV("public_channel/archive/files.csv"),
-  // ],
+  users: [...readJSON(`${FOLDER.USERS}/users.json`)],
+  ...Object.entries(channelNames).reduce((acc, [key, value]) => {
+    const basePath = getDataSource(key);
+    acc[key] = [
+      ...readJSON(`${basePath}/unArchiveList.json`),
+      ...readJSON(`${basePath}/archiveList.json`),
+    ];
+    return acc;
+  }, {}),
 };
 
 const app = express();
@@ -75,12 +75,11 @@ app.use(
   express.static(path.join(__dirname, "../..", "json_data"))
 );
 
-console.log(path.join(__dirname, "../..", "json_data"));
-
 app.use("/", (req, res, next) => {
   res.locals = {
     ...res.locals,
     ...helpers,
+    getAssetRootUrl,
     startTs: Date.now(),
     breadcrumbs: [{ text: "Home", href: "/" }],
     data,
@@ -91,20 +90,20 @@ app.use("/", (req, res, next) => {
 app.get("/", (req, res) => {
   res.render("index", {
     title: "Home",
-    messageTypes,
-    count: Object.keys(messageTypes).length,
+    messageTypes: channelNames,
+    count: Object.keys(channelNames).length,
     ...res.locals,
   });
 });
 
 app.use("/list/:type", (req, res, next) => {
   const { type } = req.params;
-  if (!messageTypes[type]) {
+  if (!channelNames[type]) {
     return res.status(404).send("Not Found");
   }
   res.locals.breadcrumbs.push({
     href: `/list/${type}`,
-    text: messageTypes[type],
+    text: channelNames[type],
   });
   res.locals.type = type;
   next();
@@ -112,7 +111,7 @@ app.use("/list/:type", (req, res, next) => {
 
 app.get("/list/:type", (req, res) => {
   const { type } = req.params;
-  const title = messageTypes[type];
+  const title = channelNames[type];
   res.render("channel-list", {
     type,
     title,
@@ -127,8 +126,12 @@ app.use("/list/:type/channel/:channelId", (req, res, next) => {
   if (!channel) {
     return res.status(404).send("Not Found");
   }
-  res.locals.channelId = channelId;
-  res.locals.channel = channel;
+  const archived = channel.is_archived ? "archive" : "unarchive";
+  Object.assign(res.locals, {
+    archived,
+    channelId,
+    channel,
+  });
   res.locals.breadcrumbs.push({
     href: `/${type}/channel/${channelId}`,
     text: helpers.getChannelName.call(res.locals, type, channel),
@@ -138,12 +141,9 @@ app.use("/list/:type/channel/:channelId", (req, res, next) => {
 
 app.get("/list/:type/channel/:channelId", (req, res) => {
   const { channel, type } = res.locals;
-  const dirPath = path.resolve(
-    DATA_DIR,
-    type,
-    "unarchive/messages",
-    channel.id
-  );
+  const { archived } = res.locals;
+  const baseDir = `${getDataSource(type)}/${archived}/messages/${channel.id}`;
+  const dirPath = baseDir;
   const messageGroups = [];
   let count = 0;
   if (fs.existsSync(dirPath) && fs.statSync(dirPath).isDirectory()) {
@@ -160,9 +160,7 @@ app.get("/list/:type/channel/:channelId", (req, res) => {
           fs.readdirSync(subDirPath)
             .filter((filename) => filename.endsWith(".json"))
             .forEach((filename) => {
-              const messages = readJSON(
-                `${type}/unarchive/messages/${channel.id}/${subDir}/${filename}`
-              );
+              const messages = readJSON(`${baseDir}/${subDir}/${filename}`);
               groupMessages.push(...messages);
             });
           messageGroups.push({
@@ -170,7 +168,7 @@ app.get("/list/:type/channel/:channelId", (req, res) => {
             type: "group",
             messages: groupMessages,
           });
-          count += 1;
+          count += groupMessages.length;
         }
       }
     });

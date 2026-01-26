@@ -31,6 +31,17 @@ nav, h1 {
   overflow: auto;
 }
 
+.channel-list li {
+  margin: 4px 0;
+}
+
+.tag {
+  padding: 0px 8px;
+  border-radius: 16px;
+  background-color:rgb(160, 160, 160);
+  color: white;
+}
+
 .debug-info {
   position: absolute;
   right: 8px;
@@ -76,7 +87,7 @@ nav, h1 {
 
 .message-anchor {
   position: absolute;
-  top: -100px;
+  top: -110px;
   width: 1px;
   height: 1px;
 }
